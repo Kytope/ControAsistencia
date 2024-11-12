@@ -1,0 +1,86 @@
+// Añade esto al final de tu alumno.component.scss
+
+// Estilos del Scanner
+.scanner-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .scanner-header {
+    padding: 20px;
+    text-align: center;
+    color: white;
+
+    h2 {
+      margin: 0;
+      font-size: 1.2em;
+      font-weight: 500;
+    }
+
+    p {
+      margin: 8px 0 0;
+      font-size: 0.9em;
+      opacity: 0.8;
+    }
+  }
+
+  .scanner-preview {
+    width: 100%;
+    height: calc(100% - 200px);
+    object-fit: cover;
+
+    // Marco de escaneo
+    &::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 70%;
+      height: 70%;
+      border: 2px solid var(--ion-color-primary);
+      border-radius: 20px;
+      box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.5);
+    }
+  }
+
+  .cancel-button {
+    position: absolute;
+    bottom: 40px;
+    width: 90%;
+    max-width: 300px;
+    --border-radius: 10px;
+    
+    ion-icon {
+      margin-right: 8px;
+    }
+  }
+}
+
+// Animación de aparición del scanner
+.scanner-container {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+// Ajustes para modo oscuro
+:host-context(.dark) {
+  .scanner-container {
+    background: rgba(0, 0, 0, 0.95);
+  }
+}

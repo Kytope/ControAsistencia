@@ -1,0 +1,75 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>
+      <ion-icon name="school-outline" class="title-icon"></ion-icon>
+      Panel del Profesor
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="cerrarSesion()">
+        <ion-icon name="log-out-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content
+      pullingIcon="chevron-down-circle-outline"
+      pullingText="Desliza para actualizar"
+      refreshingSpinner="circles"
+      refreshingText="Actualizando clases...">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <!-- Lista de Clases -->
+  <ion-list *ngIf="clases.length > 0">
+    <ion-list-header>
+      <ion-label>Mis Clases</ion-label>
+      <ion-note slot="end">Total: {{ clases.length }}</ion-note>
+    </ion-list-header>
+
+    <ion-item *ngFor="let clase of clases" class="clase-item">
+      <ion-label>
+        <h2>{{ clase.nombre }}</h2>
+        <p *ngIf="clase.total_alumnos !== undefined">
+          <ion-icon name="people" color="medium"></ion-icon>
+          {{ clase.total_alumnos }} alumno(s) registrado(s)
+        </p>
+        <p *ngIf="clase.presentes_hoy !== undefined">
+          <ion-badge [color]="getAsistenciaColor(clase)">
+            {{ clase.presentes_hoy }}/{{ clase.total_alumnos }} presentes hoy
+          </ion-badge>
+        </p>
+        <p *ngIf="clase.ultima_asistencia" class="ultima-asistencia">
+          <ion-icon name="time-outline" color="medium"></ion-icon>
+          Última asistencia: {{ clase.ultima_asistencia }}
+        </p>
+      </ion-label>
+
+      <ion-buttons slot="end">
+        <ion-button (click)="verAlumnos(clase)" color="primary">
+          <ion-icon slot="icon-only" name="people-outline"></ion-icon>
+        </ion-button>
+        <ion-button (click)="generarQR(clase)" color="success">
+          <ion-icon slot="icon-only" name="qr-code-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-item>
+  </ion-list>
+
+  <!-- Estado vacío -->
+  <div class="empty-state" *ngIf="clases.length === 0">
+    <ion-text color="medium" class="ion-text-center">
+      <ion-icon name="school-outline" size="large"></ion-icon>
+      <h2>No tienes clases asignadas</h2>
+      <p>Cuando tengas clases asignadas, aparecerán aquí</p>
+    </ion-text>
+  </div>
+
+  <!-- Loading overlay -->
+  <div class="loading-overlay" *ngIf="loading">
+    <ion-spinner name="circles"></ion-spinner>
+    <p>Cargando...</p>
+  </div>
+</ion-content>

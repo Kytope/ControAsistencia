@@ -1,0 +1,96 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      <ion-text color="primary">¡Hola {{ currentUser?.nombre }}!</ion-text>
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="logout()">
+        <ion-icon slot="icon-only" name="log-out-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="ion-padding">
+    <ion-segment [(ngModel)]="selectedSegment">
+      <ion-segment-button value="hoy">
+        <ion-label>Hoy</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="todas">
+        <ion-label>Todas</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+
+    <ion-card class="day-status-card" *ngIf="selectedSegment === 'hoy'">
+      <ion-card-content>
+        <h2>{{ getDiaActual() }}</h2>
+        <p>{{ getClasesFiltradas().length }} clases hoy</p>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-list>
+      <ion-item-sliding *ngFor="let clase of getClasesFiltradas()" class="clase-item">
+        <ion-item>
+          <ion-label>
+            <h2>{{ clase.nombre }}</h2>
+            <div class="profesor">
+              <ion-icon name="person-outline"></ion-icon>
+              <span>{{ clase.profesor }}</span>
+            </div>
+            <div class="horarios">
+              <ng-container *ngFor="let horario of getHorariosDelDia(clase)">
+                <p>
+                  <ion-icon name="time-outline"></ion-icon>
+                  {{ formatHora(horario.hora_inicio) }} - {{ formatHora(horario.hora_fin) }}
+                </p>
+              </ng-container>
+              <div *ngIf="selectedSegment === 'todas'" class="horarios-list">
+                <p *ngFor="let horario of clase.horarios">
+                  <ion-icon name="calendar-outline"></ion-icon>
+                  {{ horario.dia_semana }}: {{ formatHora(horario.hora_inicio) }} - {{ formatHora(horario.hora_fin) }}
+                </p>
+              </div>
+            </div>
+          </ion-label>
+          <ion-badge slot="end" [color]="getEstadoColor(clase)">
+            {{ tieneAsistenciaHoy(clase) ? 'Presente' : 'Pendiente' }}
+          </ion-badge>
+        </ion-item>
+      </ion-item-sliding>
+    </ion-list>
+
+    <div class="empty-state" *ngIf="getClasesFiltradas().length === 0">
+      <ion-icon name="calendar-outline" color="medium"></ion-icon>
+      <h3>No hay clases {{ selectedSegment === 'hoy' ? 'para hoy' : 'asignadas' }}</h3>
+      <p *ngIf="selectedSegment === 'hoy'">Revisa tus clases en la pestaña "Todas"</p>
+    </div>
+  </div>
+
+  <!-- Scanner Container -->
+  <div *ngIf="isScanning" class="scanner-container">
+    <div class="scanner-header">
+      <h2>Escanea el código QR</h2>
+      <p>Coloca el código dentro del marco</p>
+    </div>
+    <video 
+      id="video-preview"
+      class="scanner-preview">
+    </video>
+    <ion-button 
+      expand="block" 
+      color="danger" 
+      (click)="stopScanning()"
+      class="cancel-button">
+      <ion-icon name="close-outline" slot="start"></ion-icon>
+      Cancelar
+    </ion-button>
+  </div>
+
+  <!-- FAB Button -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="escanearQR()">
+      <ion-icon name="qr-code-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>
