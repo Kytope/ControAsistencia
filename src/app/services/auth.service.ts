@@ -19,7 +19,7 @@ interface LoginError {
 export class AuthService {
   private currentUserSubject: BehaviorSubject<Usuario | null>;
   public currentUser: Observable<Usuario | null>;
-  private apiUrl = 'https://frf42rqk-5000.brs.devtunnels.ms';
+  private apiUrl = 'https://r268tbzl-5000.brs.devtunnels.ms';
 
   constructor(private http: HttpClient) {
     this.currentUserSubject = new BehaviorSubject<Usuario | null>(
